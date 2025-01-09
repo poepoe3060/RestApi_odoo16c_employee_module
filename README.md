@@ -1,2 +1,2 @@
-# RestApi_odoo16e_employee_module
-customized rest module for odoo16 enterprise and api for employee module
+# restful module for odoo16_enterprise and odoo16_community
+# test api for employee module
