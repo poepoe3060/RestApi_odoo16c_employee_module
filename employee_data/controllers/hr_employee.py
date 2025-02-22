@@ -78,7 +78,7 @@ class LoadingEmployee(http.Controller):
         return valid_response(data)
 
     @validate_token
-    @http.route("/api/employee-create", type="http", auth="none", methods=["POST"], csrf=False)
+    @http.route("/api/employee", type="http", auth="none", methods=["POST"], csrf=False)
     def create_employee(self, name=None, phone=None):
         """
         creating new employee
@@ -100,4 +100,20 @@ class LoadingEmployee(http.Controller):
             })
         except ValueError:
             return valid_response({"status": "fail", "message": "Internal Server Error"})
+
+    @validate_token
+    @http.route("/api/employee/<id>", methods=["DELETE"], type='http', auth="none", csrf=False)
+    def delete_package_product(self, id=None):
+        """
+        delete employee record
+        """
+        try:
+            employee = request.env['hr.employee'].sudo().search([('id','=',int(id))])
+            if not employee:
+                return valid_response({'Message': 'Employee not exist!'})
+            employee.unlink()
+            return valid_response({'Message': 'Employee deleted!'})
+        except Exception as e:
+            response_val = {"status": "fail", "message": str(e)}
+            return response_val
 
