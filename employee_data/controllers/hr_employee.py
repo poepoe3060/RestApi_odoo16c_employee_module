@@ -76,3 +76,28 @@ class LoadingEmployee(http.Controller):
             }
 
         return valid_response(data)
+
+    @validate_token
+    @http.route("/api/employee-create", type="http", auth="none", methods=["POST"], csrf=False)
+    def create_employee(self, name=None, phone=None):
+        """
+        creating new employee
+        """
+        try:
+            if not name or not phone:
+                return valid_response({'Message': 'Please fill employee name and phone!'})
+            existing_employee = request.env['hr.employee'].sudo().search([('name','=', name),('mobile_phone','=', phone)])
+            if existing_employee:
+                return valid_response({'Message': 'The employee already exist!'})
+
+            employee = request.env['hr.employee'].create({
+                'name': name,
+                'mobile_phone': phone,
+            })
+            return valid_response({
+                'Id': employee.id,
+                'Message': 'The employee successfully created!'
+            })
+        except ValueError:
+            return valid_response({"status": "fail", "message": "Internal Server Error"})
+
